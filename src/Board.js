@@ -97,15 +97,12 @@
 
       let row = this.attributes[rowIndex];
       for (let i = 0; i < row.length; i++) {
-          if (row[i] === 1) {
-            counter++;
-          }
+        if (row[i] === 1) {
+          counter++;
         }
-        if (counter > 1) {
-          return true;
-        }
-        return false;
-      },
+      }
+      return counter > 1;
+    },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
@@ -118,8 +115,8 @@
     //   return false; // fixme
     // },
 
-    var boardSize = this.attributes.n;
-    for (let i = 0; i < boardSize; i++) {
+    var board = this.attributes;
+    for (let i = 0; i < board.n; i++) {
       if (this.hasRowConflictAt(i)) {
         return true;
       }
@@ -129,8 +126,8 @@
 
       /*
       [1, 0, 0, 0],
-      [0, 0, 0, 0],
-      [0, 0, 0, 0],
+      [1, 0, 0, 0],
+      [1, 0, 0, 0],
       [0, 0, 0, 0]
       row[0][0]; => false
       row[1][0]; => true colCount++
@@ -143,21 +140,21 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      let colCount = 0;
-      for (let i = 0; i < this.attributes.n; i++) {
-        if (this.attributes[i][colIndex] > 0) {
-          colCount++;
+      let counter = 0;
+      let board = this.attributes;
+      for (let i = 0; i < board.n; i++) {
+        if (board[i][colIndex] > 0) {
+          counter++;
         }
+        // putting this if statement in the loop will break after checking if there is a queen or rook in the next row at the specified column index
       }
-      if (colCount > 1) {
-        return true;
-      }
-      return false; // fixme
+      return counter > 1;
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      for (let i = 0; i < this.attributes.n; i++) {
+      let board = this.attributes;
+      for (let i = 0; i < board.n; i++) {
         if (this.hasColConflictAt(i)) {
           return true;
         }
@@ -172,28 +169,33 @@
     //
     // test if a specific major diagonal on this board contains a conflict
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      let count = 0;
+      let counter = 0;
       let columnIndex = majorDiagonalColumnIndexAtFirstRow;
+      let board = this.attributes;
       // for every row, we want to increment columnIndex
-      for (let i = 0; i < this.attributes.n; i++) {
+      for (let i = 0; i < board.n; i++) {
         // iterate through each row
-        if (this.attributes[i][columnIndex] === 1) {
-          count++;
+        if (board[i][columnIndex] === 1) {
+          counter++;
         }
-        if (count > 0) {
+        if (counter > 0) {
           columnIndex++;
         }
       }
-      if (count > 1) {
-        return true;
-      }
-      return false; // fixme
+      return counter > 1; // fixme
     },
 
     /*
-    columnIndex = 1;
-    Board[i][1] = 1;
-
+    columnIndex = majorDiagonalColumnIndexAtFirstRow
+      Board[0][0] = 1;
+      count +1
+      Board[1][1] = 1
+      count +1;
+      Board[2][2] = 0;
+      [0, 0, 0, 0],
+      [0, 0, 0, 0],
+      [0, 0, 1, 0],
+      [0, 0, 0, 0]
     */
 
     // test if any major diagonals on this board contain conflicts
@@ -213,21 +215,18 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
-      let count = 0;
+      let counter = 0;
       let columnIndex = minorDiagonalColumnIndexAtFirstRow;
       for (let i = 0; i < this.attributes.n; i++) {
         // iterate through each row
         if (this.attributes[i][columnIndex] === 1) {
-          count++;
+          counter++;
         }
-        if (count >= 1) {
+        if (counter >= 1) {
           columnIndex--;
         }
       }
-      if (count > 1) {
-        return true;
-      }
-      return false; // fixme
+      return counter > 1; // fixme
     },
 
     // test if any minor diagonals on this board contain conflicts
